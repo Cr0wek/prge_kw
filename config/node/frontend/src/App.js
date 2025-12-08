@@ -1,7 +1,11 @@
-import "./App.css";
-
+import Home from "./pages/Home";
+import "./styles/style.scss";
 function App() {
-  return <div className="App">i hate niggers</div>;
+  return (
+    <div className="app">
+      <Home />
+    </div>
+  );
 }
 
 export default App;

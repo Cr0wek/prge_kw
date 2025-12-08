@@ -1,0 +1,11 @@
+.app {
+  background: $background-color;
+  color: $secondary-color;
+  height: 100vh;
+  font-family: "Arial";
+  @include flex-center;
+
+  .home__button {
+    margin-top: 2vh;
+  }
+}
