@@ -33,7 +33,7 @@ jobs:
       - name: Build the app
         run: npm run build
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact
         with:
           paths: config/node/frontend/build
   deploy:
