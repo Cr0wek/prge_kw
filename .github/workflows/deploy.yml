@@ -32,10 +32,16 @@ jobs:
         run: npm ci
       - name: Build the app
         run: npm run build
+<<<<<<< HEAD
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+=======
       - name: Upload artifacts
         uses: actions/upload-artifact
+>>>>>>> origin/main
         with:
-          paths: config/node/frontend/build
+          name: build
+          path: config/node/frontend/build
   deploy:
     environment:
       name: github-pages
