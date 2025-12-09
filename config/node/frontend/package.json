@@ -1,5 +1,6 @@
 {
   "name": "frontend",
+  "homepage": "https://cr0wek.github.io/prge_kw",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
