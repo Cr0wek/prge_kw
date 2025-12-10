@@ -4,6 +4,7 @@ import View from "ol/View.js";
 import TileLayer from "ol/layer/Tile.js";
 import OSM from "ol/source/OSM.js";
 import { useGeographic } from "ol/proj";
+import "ol/ol.css";
 
 function MapComponent(props) {
   useGeographic();
