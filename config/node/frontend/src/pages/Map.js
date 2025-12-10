@@ -1,7 +1,12 @@
 import React from "react";
+import MapComponent from "../components/MapComponent";
 
 function Map(props) {
-  return <div>Mapa</div>;
+  return (
+    <div>
+      <MapComponent properties={props} />
+    </div>
+  );
 }
 
 export default Map;
