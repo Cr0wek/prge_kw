@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build-and-deploy:
-    name: Build & Push
+    name: Build & Deploy to ${{github.ref_name}}
     runs-on: self-hosted
     environment: ${{github.ref_name}}
     steps:
