@@ -16,8 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Uruchom docker-compose
-        env: POSTGRES_DB=${{secrets.POSTGRES_DB}}
-          POSTGRES_USER=${{secrets.POSTGRES_USER}}
-          POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}}
+        env:
+          #DB
+          POSTGRES_DB: ${{secrets.POSTGRES_DB}}
+          POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
         run: |
           docker-compose -f ./docker-compose/docker-compose-prge-local.yml -p remote-prge up --build -d
