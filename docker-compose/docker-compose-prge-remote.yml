@@ -40,7 +40,7 @@ services:
       - *env-postgres-user
       - *env-postgres-password
     ports:
-      - ${FASTAPI_PORT}:10000
+      - 10002:10000
     depends_on:
       - postgis
 
