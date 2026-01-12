@@ -14,7 +14,7 @@ async def get_users():
         with db_connection.connect() as conn:
             result = conn.execute(sql_query)
             users=[dict(row._mapping) for row in result]
-        return {'status': 'success', "users": users}
+        return {"users": users}
     except Exception as e:
         print("Błąd podczas get_users")
         return {'status': str(e)}
