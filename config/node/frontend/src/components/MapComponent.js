@@ -17,14 +17,24 @@ function MapComponent(props) {
         new TileLayer({
           source: new OSM(),
         }),
+        // new TileLayer({
+        //   source: new TileWMS({
+        //     url: "http://localhost:9000/geoserver/ne/wms?",
+        //     params: {
+        //       LAYERS: "ne:countries",
+        //       TILED: true,
+        //     },
+        //     serverType: "geoserver",
+        //   }),
+        // }),
         new TileLayer({
           source: new TileWMS({
-            url: "http://localhost:9000/geoserver/ne/wms?",
+            url: "http://localhost:9001/geoserver/ne/wms?",
             params: {
               LAYERS: "ne:countries",
               TILED: true,
-              serverType: "geoserver",
             },
+            serverType: "geoserver",
           }),
         }),
       ],
