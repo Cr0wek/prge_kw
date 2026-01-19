@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - env-qa
 
 permissions:
   contents: read
