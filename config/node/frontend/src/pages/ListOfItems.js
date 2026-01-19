@@ -11,13 +11,9 @@ function ListOfItems(props) {
         console.log(res);
         setUsers(res.users);
       });
-    console.log("działa", users);
   }, []);
-  useEffect(() => {
-    console.log("Stan users zaktualizowany:", users);
-  }, [users]);
+  useEffect(() => {}, [users]);
 
-  console.log("To jest users i jego zawartość", users.data);
   return (
     <div>
       ListOfItems
