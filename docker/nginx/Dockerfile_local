@@ -4,6 +4,7 @@ COPY config/node/frontend/package.json .
 RUN npm install
 
 COPY config/node/frontend .
+ENV CI=false
 RUN npm run build
 
 
