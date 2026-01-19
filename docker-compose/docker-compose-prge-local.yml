@@ -61,5 +61,14 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
 
+  nginx:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile_local
+    image: 'prge_2025_nginx'
+    container_name: 'prge_2025_nginx'
+    ports:
+      - 8090:80
+
 volumes:
   postgis-prge-2025-data:

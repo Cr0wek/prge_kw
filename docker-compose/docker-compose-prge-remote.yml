@@ -44,5 +44,13 @@ services:
     depends_on:
       - postgis
 
+  nginx:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile_remote
+    image: "prge_2025_nginx"
+    container_name: prge_2025_nginx-${ENV_NAME}
+    ports:
+      - 8085:80
 volumes:
   postgis-prge-2025-data:
