@@ -5,8 +5,9 @@ import {
   Services,
   Map,
   About,
-  NewUser,
+  AddEntry,
 } from "./LazyImports";
+
 const routes = createHashRouter([
   {
     path: "/",
@@ -24,17 +25,19 @@ const routes = createHashRouter([
     path: "/services",
     element: <Services />,
   },
+  // Dodajemy parametr :type, aby rozróżnić /list/events, /list/artists itp.
   {
-    path: "/list",
+    path: "/list/:type",
     element: <ListOfItems />,
   },
   {
-    path: "/newuser",
-    element: <NewUser />,
+    path: "/addentry/:type",
+    element: <AddEntry />,
   },
   {
     path: "*",
     element: <div>404</div>,
   },
 ]);
+
 export default routes;

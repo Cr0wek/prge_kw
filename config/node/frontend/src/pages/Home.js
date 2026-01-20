@@ -1,26 +1,63 @@
 import React from "react";
-import { Typography } from "@mui/material";
-import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
-function Home(props) {
+import { Box, Button, Typography } from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { useNavigate } from "react-router-dom";
+const Home = () => {
+  const navigate = useNavigate();
+
   return (
-    <div>
-      <h1 className="home__header">GEOPORTAL</h1>
-      <Typography>
-        Geoportal tematyczny poświęcony danym przestrzennym
+    <Box
+      sx={{
+        height: "100vh",
+        bgcolor: "#E5E5E5", // Jasnoszare tło z Figmy
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#000", // Domyślny kolor tekstu na stronie: czarny
+      }}
+    >
+      <Typography variant="h2" sx={{ color: "#4a6fa5", fontWeight: "bold" }}>
+        GEO<span style={{ color: "#000000" }}>PORTAL</span>{" "}
+        {/* PORTAL zmieniony na czarny */}
       </Typography>
+
+      <Typography
+        variant="subtitle1"
+        sx={{ mb: 4, textAlign: "center", px: 2, color: "#000" }}
+      >
+        tematyczny do zarządzania
+        <br />
+        wydarzeniami kulturalnymi i artystami
+      </Typography>
+      <img
+        src={
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/POL_location_map.svg/1099px-POL_location_map.svg.png"
+        }
+        alt="Mapa Polski"
+        height={600}
+      />
+
       <Button
-        className="home__button"
         variant="contained"
-        color="primary"
         size="large"
-        component={Link}
-        to="services"
+        endIcon={<PlayArrowIcon />}
+        onClick={() => navigate("/services")}
+        sx={{
+          borderRadius: 50,
+          px: 6,
+          py: 1.5,
+          bgcolor: "#4a6fa5",
+          color: "#fff", // Tekst na przycisku pozostaje biały dla kontrastu
+          fontSize: "1.2rem",
+          mt: 4,
+          "&:hover": { bgcolor: "#3b5c8d" },
+        }}
       >
         START
       </Button>
-    </div>
+    </Box>
   );
-}
+};
 
 export default Home;
