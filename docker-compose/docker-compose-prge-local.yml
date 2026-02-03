@@ -64,9 +64,9 @@ services:
   nginx:
     build:
       context: ..
-      dockerfile: docker/nginx/Dockerfile_local
-    image: 'prge_2025_nginx'
-    container_name: 'prge_2025_nginx'
+      dockerfile: docker/nginx/Dockerfile
+    image: "prge_2025_nginx"
+    container_name: "prge_2025_nginx"
     ports:
       - 8090:80
 

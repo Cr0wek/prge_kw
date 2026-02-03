@@ -9,12 +9,13 @@ const Home = () => {
     <Box
       sx={{
         height: "100vh",
-        bgcolor: "#E5E5E5", // Jasnoszare tło z Figmy
+        width: "100vw",
+        bgcolor: "#E5E5E5",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        color: "#000", // Domyślny kolor tekstu na stronie: czarny
+        color: "#000",
       }}
     >
       <Typography variant="h2" sx={{ color: "#4a6fa5", fontWeight: "bold" }}>
@@ -48,7 +49,7 @@ const Home = () => {
           px: 6,
           py: 1.5,
           bgcolor: "#4a6fa5",
-          color: "#fff", // Tekst na przycisku pozostaje biały dla kontrastu
+          color: "#fff",
           fontSize: "1.2rem",
           mt: 4,
           "&:hover": { bgcolor: "#3b5c8d" },

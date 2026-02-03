@@ -47,7 +47,7 @@ services:
   nginx:
     build:
       context: ..
-      dockerfile: docker/nginx/Dockerfile_remote
+      dockerfile: docker/nginx/Dockerfile
     image: "prge_2025_nginx"
     container_name: prge_2025_nginx-${ENV_NAME}
     ports:

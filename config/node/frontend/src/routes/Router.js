@@ -1,21 +1,10 @@
 import { createHashRouter } from "react-router-dom";
-import {
-  Home,
-  ListOfItems,
-  Services,
-  Map,
-  About,
-  AddEntry,
-} from "./LazyImports";
+import { Home, ListOfItems, Services, Map, AddEntry } from "./LazyImports";
 
 const routes = createHashRouter([
   {
     path: "/",
     element: <Home />,
-  },
-  {
-    path: "/about",
-    element: <About />,
   },
   {
     path: "/map",
@@ -25,7 +14,6 @@ const routes = createHashRouter([
     path: "/services",
     element: <Services />,
   },
-  // Dodajemy parametr :type, aby rozróżnić /list/events, /list/artists itp.
   {
     path: "/list/:type",
     element: <ListOfItems />,

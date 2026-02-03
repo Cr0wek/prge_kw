@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -10,6 +10,8 @@ import {
   Fab,
   Avatar,
   Chip,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,62 +22,46 @@ const ListOfItems = () => {
   const { type } = useParams();
   const navigate = useNavigate();
 
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const titles = {
     events: "Wydarzenia",
     artists: "Artyści",
     employees: "Pracownicy",
   };
   const title = titles[type] || "Lista";
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      let url = "";
+      if (type === "events") {
+        url = "http://localhost:10000/app/events";
+      } else if (type === "artists" || type === "employees") {
+        url = `http://localhost:10000/app/users?type=${type}`;
+      }
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Błąd pobierania danych z serwera");
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [type]); //ponowne uruchomienie
 
-  // DANE TESTOWE
-  const eventsData = [
-    { title: "JUWE FEST", desc: "Stadion Narodowy", color: "#d32f2f" },
-    { title: "jUWenalia", desc: "Letnia Scena Progresji", color: "#f57c00" },
-    { title: "Varsonalia", desc: "Stadion Syrenki", color: "#c2185b" },
-  ];
-
-  const listData = [
-    {
-      name: "Marian Iżycki",
-      address: "Poselska 81/4, Wwa",
-      event: "jUWenalia",
-      role: "Ochrona",
-    },
-    {
-      name: "Zdzisław Nowak",
-      address: "Lubelska 73/12, Wwa",
-      event: "jUWenalia",
-      role: "Bar",
-    },
-    {
-      name: "Mariusz Bochenek",
-      address: "Bartnicza 20/44, Wwa",
-      event: "Varsonalia",
-      role: "Ochrona",
-    },
-    {
-      name: "Adrian Jabłecznik",
-      address: "Wał Miedzeszyński 71",
-      event: "JUWE FEST",
-      role: "Bar",
-    },
-    {
-      name: "Mateusz Zawistowski",
-      address: "Poniatowskiego 91",
-      event: "JUWE FEST",
-      role: "Ochrona",
-    },
-  ];
-
-  // --- HEADER ---
   const Header = () => (
     <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        mb: 6, // Zwiększyłem margines pod nagłówkiem dla oddechu
-      }}
+      sx={{ width: "100%", display: "flex", justifyContent: "center", mb: 6 }}
     >
       <Box
         sx={{
@@ -94,61 +80,29 @@ const ListOfItems = () => {
           sx={{
             bgcolor: "#3b82f6",
             borderRadius: 50,
-            px: 4, // Szerszy przycisk
+            px: 4,
             py: 1,
             color: "#fff",
             fontWeight: "bold",
-            fontSize: "0.9rem",
-            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)", // Ładniejszy cień
+            boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
             textTransform: "none",
             whiteSpace: "nowrap",
-            "&:hover": {
-              bgcolor: "#2563eb",
-              transform: "translateY(-2px)", // Efekt uniesienia
-              transition: "transform 0.2s",
-            },
+            "&:hover": { bgcolor: "#2563eb", transform: "translateY(-2px)" },
           }}
         >
           POWRÓT
         </Button>
-
-        {/* Wyszukiwarka */}
-        <Paper
-          elevation={4} // Większy cień
-          sx={{
-            width: "100%",
-            maxWidth: 600, // Szersza wyszukiwarka
-            mx: 4,
-            borderRadius: 50,
-            bgcolor: "#fff",
-            p: "6px 20px", // Większy padding w środku
-            display: "flex",
-            alignItems: "center",
-            transition: "0.3s",
-            "&:hover": { boxShadow: 6 },
-          }}
-        >
-          <InputBase
-            fullWidth
-            sx={{ textAlign: "center", color: "#333", fontSize: "1.1rem" }}
-            placeholder="WYSZUKAJ..."
-            inputProps={{ style: { textAlign: "center" } }}
-          />
-        </Paper>
-
-        {/* TYTUŁ STRONY - STYLIZACJA */}
         <Typography
-          variant="h3" // Większy nagłówek
+          variant="h3"
           sx={{
-            fontWeight: 900, // Bardzo gruby
+            fontWeight: 900,
             textTransform: "uppercase",
-            letterSpacing: "0.1em", // Rozstrzelone litery
-            color: "#1e293b", // Ciemny, elegancki kolor (nie czarny)
-            width: "auto",
+            letterSpacing: "0.1em",
+            color: "#1e293b",
             minWidth: "200px",
             textAlign: "right",
-            textShadow: "2px 2px 4px rgba(0,0,0,0.1)", // Delikatny cień tekstu
-            display: { xs: "none", md: "block" }, // Ukrywanie na telefonach, widoczne na tablecie/PC
+            textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+            display: { xs: "none", md: "block" },
           }}
         >
           {title}
@@ -168,14 +122,22 @@ const ListOfItems = () => {
         alignItems: "center",
         overflowX: "hidden",
         pb: 10,
-        // --- ZMIANA POZYCJI PASKI (WIĘKSZY ODSTĘP) ---
-        pt: 18, // ok. 144px od góry - pasek będzie wyraźnie niżej
+        pt: 18,
       }}
     >
       <Header />
 
-      {/* --- WIDOK 1: WYDARZENIA (KAFLE) --- */}
-      {type === "events" && (
+      {}
+      {loading && <CircularProgress size={60} sx={{ mt: 5 }} />}
+
+      {error && (
+        <Alert severity="error" sx={{ mt: 5, width: "80%", maxWidth: 600 }}>
+          Nie udało się pobrać danych: {error}. Sprawdź czy serwer działa.
+        </Alert>
+      )}
+
+      {}
+      {!loading && !error && type === "events" && (
         <Box
           sx={{
             width: "100%",
@@ -190,17 +152,17 @@ const ListOfItems = () => {
             justifyContent="center"
             sx={{ maxWidth: "1400px", px: 4 }}
           >
-            {eventsData.map((ev, idx) => (
+            {data.map((ev, idx) => (
               <Grid
                 item
                 xs={12}
                 sm={6}
                 lg={4}
-                key={idx}
+                key={ev.id || idx}
                 sx={{ display: "flex", justifyContent: "center" }}
               >
                 <Paper
-                  elevation={8} // Głębszy cień kafelków
+                  elevation={8}
                   sx={{
                     height: 420,
                     width: "100%",
@@ -209,7 +171,7 @@ const ListOfItems = () => {
                     borderRadius: 5,
                     bgcolor: "#fff",
                     overflow: "hidden",
-                    transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)", // Płynniejsza animacja
+                    transition: "all 0.3s",
                     cursor: "pointer",
                     "&:hover": {
                       transform: "translateY(-12px)",
@@ -217,10 +179,11 @@ const ListOfItems = () => {
                     },
                   }}
                 >
+                  {}
                   <Box
                     sx={{
                       height: "65%",
-                      bgcolor: ev.color,
+                      bgcolor: idx % 2 === 0 ? "#d32f2f" : "#f57c00",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -233,7 +196,7 @@ const ListOfItems = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {idx + 1}
+                      {}
                     </Typography>
                   </Box>
                   <Box sx={{ p: 3 }}>
@@ -241,10 +204,10 @@ const ListOfItems = () => {
                       variant="h5"
                       sx={{ fontWeight: 800, color: "#000", mb: 0.5 }}
                     >
-                      {ev.title}
+                      {ev.name}
                     </Typography>
                     <Typography variant="body1" sx={{ color: "#666" }}>
-                      {ev.desc}
+                      {ev.location}
                     </Typography>
                   </Box>
                 </Paper>
@@ -254,18 +217,12 @@ const ListOfItems = () => {
         </Box>
       )}
 
-      {/* --- WIDOK 2: ARTYŚCI I PRACOWNICY (WIZYTÓWKI) --- */}
-      {(type === "artists" || type === "employees") && (
-        <Box
-          sx={{
-            width: "100%",
-            px: { xs: 2, md: 4 },
-            maxWidth: "1400px",
-          }}
-        >
+      {}
+      {!loading && !error && (type === "artists" || type === "employees") && (
+        <Box sx={{ width: "100%", px: { xs: 2, md: 4 }, maxWidth: "1400px" }}>
           <Grid container spacing={3}>
-            {listData.map((row, idx) => (
-              <Grid item xs={12} sm={6} lg={4} key={idx}>
+            {data.map((row, idx) => (
+              <Grid item xs={12} sm={6} lg={4} key={row.id || idx}>
                 <Paper
                   elevation={3}
                   sx={{
@@ -305,18 +262,31 @@ const ListOfItems = () => {
                       }}
                     >
                       {row.name}
+                      {}
+                      {row.nick && (
+                        <span
+                          style={{
+                            fontSize: "0.9rem",
+                            color: "#666",
+                            marginLeft: "5px",
+                          }}
+                        >
+                          ({row.nick})
+                        </span>
+                      )}
                     </Typography>
 
                     <Typography
                       variant="body2"
                       sx={{ color: "#64748b", mt: 0.5, mb: 1.5 }}
                     >
-                      {row.address}
+                      {row.location}
                     </Typography>
 
                     <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                      {}
                       <Chip
-                        label={row.event}
+                        label={row.event_name || "Brak"}
                         size="small"
                         sx={{
                           bgcolor: "#eff6ff",
@@ -325,6 +295,8 @@ const ListOfItems = () => {
                           borderRadius: "8px",
                         }}
                       />
+
+                      {}
                       {type === "employees" && (
                         <Chip
                           label={row.role}
@@ -332,6 +304,20 @@ const ListOfItems = () => {
                           sx={{
                             bgcolor:
                               row.role === "Ochrona" ? "#1f2937" : "#f97316",
+                            color: "#fff",
+                            fontWeight: "bold",
+                            borderRadius: "8px",
+                          }}
+                        />
+                      )}
+
+                      {}
+                      {type === "artists" && (
+                        <Chip
+                          label="Artysta"
+                          size="small"
+                          sx={{
+                            bgcolor: "#9333ea",
                             color: "#fff",
                             fontWeight: "bold",
                             borderRadius: "8px",

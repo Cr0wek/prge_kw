@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   TextField,
@@ -12,28 +12,34 @@ import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const AddEntry = () => {
-  const { type } = useParams(); // 'event', 'artist', 'employee'
+  const { type } = useParams();
   const navigate = useNavigate();
 
-  // Konfiguracja pól w zależności od typu
   const config = {
-    event: { title: "Dodaj Wydarzenie", fields: ["name", "location"] },
-    artist: { title: "Dodaj Artystę", fields: ["name", "address", "event"] },
-    employee: {
+    events: {
+      title: "Dodaj Nowe Wydarzenie",
+      endpoint: "http://localhost:10000/app/insert_event",
+    },
+    artists: {
+      title: "Dodaj Artystę",
+      endpoint: "http://localhost:10000/app/insert_user",
+    },
+    employees: {
       title: "Dodaj Pracownika",
-      fields: ["name", "address", "role", "event"],
+      endpoint: "http://localhost:10000/app/insert_user",
     },
   };
 
-  const currentConfig = config[type] || config.event;
+  const currentConfig = config[type] || config.events;
 
   const [formData, setFormData] = useState({
     name: "",
     location: "",
-    address: "",
+    nick: "",
     role: "",
-    event: "",
+    event_name: "",
   });
+
   const [status, setStatus] = useState({ type: "", message: "" });
 
   const handleChange = (e) => {
@@ -42,137 +48,163 @@ const AddEntry = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus({ type: "info", message: "Wysyłanie..." });
+    setStatus({ type: "info", message: "Wysyłanie danych..." });
 
-    // Symulacja wysłania (lub Twój endpoint)
     try {
-      console.log("Wysyłanie danych:", { type, ...formData });
+      let payload = {};
+      if (type === "events") {
+        payload = { name: formData.name, location: formData.location };
+      } else {
+        payload = {
+          name: formData.name,
+          location: formData.location,
+          event_name: formData.event_name,
+          role: type === "artists" ? "Artysta" : formData.role,
+          nick: type === "artists" ? formData.nick : "",
+        };
+      }
 
-      // Tutaj zostawiam Twój oryginalny fetch (zmieniłem endpoint dynamicznie)
-      /*
-      const response = await fetch(`http://localhost:10000/app/insert_${type}`, {
+      const response = await fetch(currentConfig.endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
-      */
 
-      // Symulacja sukcesu
-      setTimeout(() => {
+      const result = await response.json();
+
+      if (response.ok && !result.error) {
         setStatus({ type: "success", message: "Dodano pomyślnie!" });
         setFormData({
           name: "",
           location: "",
-          address: "",
+          nick: "",
           role: "",
-          event: "",
+          event_name: "",
         });
-      }, 1000);
+      } else {
+        throw new Error(result.error || "Błąd serwera");
+      }
     } catch (error) {
       setStatus({ type: "error", message: error.message });
     }
   };
 
   return (
-    <Container
-      maxWidth="sm"
+    <Box
       sx={{
-        mt: 4,
-        height: "100vh",
+        width: "100vw",
+        minHeight: "100vh",
+        bgcolor: "#E5E5E5",
         display: "flex",
-        flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
+        py: 4,
       }}
     >
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate(-1)}
-        sx={{ alignSelf: "flex-start", mb: 2 }}
-      >
-        Powrót
-      </Button>
-      <Paper elevation={3} sx={{ p: 4, backgroundColor: "#f5f5f5" }}>
-        <Typography
-          variant="h5"
-          gutterBottom
-          align="center"
-          sx={{ fontWeight: "bold" }}
+      {}
+      <Container maxWidth="sm">
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate(-1)}
+          sx={{ mb: 2, fontWeight: "bold", color: "#333" }}
         >
-          {currentConfig.title}
-        </Typography>
+          Anuluj i wróć
+        </Button>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-          {currentConfig.fields.includes("name") && (
+        <Paper elevation={6} sx={{ p: 5, borderRadius: 4, bgcolor: "#fff" }}>
+          <Typography
+            variant="h4"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: "bold", color: "#1e293b", mb: 4 }}
+          >
+            {currentConfig.title}
+          </Typography>
+
+          <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
-              label="Imię i Nazwisko / Nazwa"
+              label={type === "events" ? "Nazwa Wydarzenia" : "Imię i Nazwisko"}
               name="name"
               value={formData.name}
               onChange={handleChange}
               margin="normal"
               required
+              variant="outlined"
             />
-          )}
-          {currentConfig.fields.includes("location") && (
+
             <TextField
               fullWidth
-              label="Lokalizacja"
+              label={type === "events" ? "Lokalizacja" : "Adres zamieszkania"}
               name="location"
               value={formData.location}
               onChange={handleChange}
               margin="normal"
               required
             />
-          )}
-          {currentConfig.fields.includes("address") && (
-            <TextField
-              fullWidth
-              label="Adres"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              margin="normal"
-              required
-            />
-          )}
-          {currentConfig.fields.includes("event") && (
-            <TextField
-              fullWidth
-              label="Przypisane Wydarzenie"
-              name="event"
-              value={formData.event}
-              onChange={handleChange}
-              margin="normal"
-              required
-            />
-          )}
-          {currentConfig.fields.includes("role") && (
-            <TextField
-              fullWidth
-              label="Rola (np. Ochrona)"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              margin="normal"
-              required
-            />
-          )}
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2, bgcolor: "#3b82f6" }}
-          >
-            Wyślij do bazy
-          </Button>
+            {(type === "artists" || type === "employees") && (
+              <TextField
+                fullWidth
+                label="Przypisane wydarzenie (Nazwa)"
+                name="event_name"
+                value={formData.event_name}
+                onChange={handleChange}
+                margin="normal"
+                required
+              />
+            )}
 
-          {status.message && (
-            <Alert severity={status.type}>{status.message}</Alert>
-          )}
-        </Box>
-      </Paper>
-    </Container>
+            {type === "artists" && (
+              <TextField
+                fullWidth
+                label="Pseudonim (Nick)"
+                name="nick"
+                value={formData.nick}
+                onChange={handleChange}
+                margin="normal"
+              />
+            )}
+
+            {type === "employees" && (
+              <TextField
+                fullWidth
+                label="Rola / Stanowisko"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                margin="normal"
+                required
+              />
+            )}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              sx={{
+                mt: 4,
+                mb: 2,
+                bgcolor: "#3b82f6",
+                height: 50,
+                fontWeight: "bold",
+                borderRadius: 2,
+                "&:hover": { bgcolor: "#2563eb" },
+              }}
+            >
+              ZAPISZ DANE
+            </Button>
+
+            {status.message && (
+              <Alert severity={status.type} sx={{ mt: 2 }}>
+                {status.message}
+              </Alert>
+            )}
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 
