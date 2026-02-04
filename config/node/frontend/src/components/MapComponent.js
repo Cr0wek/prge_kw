@@ -19,9 +19,19 @@ function MapComponent(props) {
         }),
         new TileLayer({
           source: new TileWMS({
-            url: "http://localhost:9000/geoserver/ne/wms?",
+            url: "http://localhost:9000/geoserver/prge/wms?",
             params: {
-              LAYERS: "ne:countries",
+              LAYERS: "prge:users",
+              TILED: true,
+            },
+            serverType: "geoserver",
+          }),
+        }),
+        new TileLayer({
+          source: new TileWMS({
+            url: "http://localhost:9000/geoserver/prge/wms?",
+            params: {
+              LAYERS: "prge:event",
               TILED: true,
             },
             serverType: "geoserver",

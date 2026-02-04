@@ -1,9 +1,10 @@
-FROM node AS build
+FROM node:alpine AS build
 WORKDIR /app
 COPY config/node/frontend/package.json .
 RUN npm install
 
 COPY config/node/frontend .
+ENV CI=false
 RUN npm run build
 
 
